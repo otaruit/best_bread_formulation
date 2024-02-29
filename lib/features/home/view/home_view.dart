@@ -1,5 +1,6 @@
 import 'package:best_bread_formulation/constants/assets_constants.dart';
 import 'package:best_bread_formulation/constants/ui_constants.dart';
+import 'package:best_bread_formulation/features/formulation_list/views/create_formulation_view.dart';
 import 'package:best_bread_formulation/theme/pallete.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,20 +27,21 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
-  // onCreateTweet() {
-  //   Navigator.push(context, CreateTweetScreen.route());
-  // }
+  onCreateFormulation() {
+    Navigator.push(context, CreateFormulationView.route());
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _page == 0 ? appBar : null,
+
       body: IndexedStack(
         index: _page,
         children: UIConstants.bottomTabBarPages,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){},
+        onPressed: onCreateFormulation,
         child: const Icon(
           Icons.add,
           color: Pallete.whiteColor,
@@ -54,8 +56,7 @@ class _HomeViewState extends State<HomeView> {
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               _page == 0
-                  ? AssetsConstants.bread
-                  : AssetsConstants.bread,
+                  ? AssetsConstants.bread2 : AssetsConstants.bread2,
             ),
           ),
           BottomNavigationBarItem(
@@ -66,8 +67,7 @@ class _HomeViewState extends State<HomeView> {
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               _page == 2
-                  ? AssetsConstants.bread
-                  : AssetsConstants.bread,
+                  ? AssetsConstants.bread2 : AssetsConstants.bread2,
             ),
           ),
         ],
