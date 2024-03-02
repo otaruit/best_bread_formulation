@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
@@ -15,6 +16,7 @@ class Formulation {
   final int sugar;
   final int salt;
   final int skimMilk;
+  final int east;
   final int water;
   final String uid;
   final String id;
@@ -22,22 +24,23 @@ class Formulation {
   final List<String> commentIds;
   final List<String> imageLinks;
   Formulation({
-    this.recipeName = '',
-    this.versions = 0,
+    required this.recipeName,
+    required this.versions,
     required this.revisionDate,
     required this.creationDate,
-    this.strongFlour = 0,
-    this.weakFlour = 0,
-    this.butter = 0,
-    this.sugar = 0,
-    this.salt = 0,
-    this.skimMilk = 0,
-    this.water = 0,
-    this.uid = '',
-    this.id = '',
-    this.likes = const [],
-    this.commentIds = const [],
-    this.imageLinks = const [],
+    required this.strongFlour,
+    required this.weakFlour,
+    required this.butter,
+    required this.sugar,
+    required this.salt,
+    required this.skimMilk,
+    required this.east,
+    required this.water,
+    required this.uid,
+    required this.id,
+    required this.likes,
+    required this.commentIds,
+    required this.imageLinks,
   });
 
   Formulation copyWith({
@@ -51,6 +54,7 @@ class Formulation {
     int? sugar,
     int? salt,
     int? skimMilk,
+    int? east,
     int? water,
     String? uid,
     String? id,
@@ -69,6 +73,7 @@ class Formulation {
       sugar: sugar ?? this.sugar,
       salt: salt ?? this.salt,
       skimMilk: skimMilk ?? this.skimMilk,
+      east: east ?? this.east,
       water: water ?? this.water,
       uid: uid ?? this.uid,
       id: id ?? this.id,
@@ -90,6 +95,7 @@ class Formulation {
       'sugar': sugar,
       'salt': salt,
       'skimMilk': skimMilk,
+      'east': east,
       'water': water,
       'uid': uid,
       'id': id,
@@ -103,23 +109,25 @@ class Formulation {
     return Formulation(
       recipeName: map['recipeName'] as String,
       versions: map['versions'] as int,
-      revisionDate:
-          DateTime.fromMillisecondsSinceEpoch(map['revisionDate'] as int),
-      creationDate:
-          DateTime.fromMillisecondsSinceEpoch(map['creationDate'] as int),
+        revisionDate:
+            DateTime.fromMillisecondsSinceEpoch(map['revisionDate'] as int),
+        creationDate:
+            DateTime.fromMillisecondsSinceEpoch(map['creationDate'] as int),
       strongFlour: map['strongFlour'] as int,
       weakFlour: map['weakFlour'] as int,
       butter: map['butter'] as int,
       sugar: map['sugar'] as int,
       salt: map['salt'] as int,
       skimMilk: map['skimMilk'] as int,
+        east: map['east'] as int,
       water: map['water'] as int,
       uid: map['uid'] as String,
       id: map['id'] as String,
       likes: List<String>.from((map['likes'] as List<String>)),
-      commentIds: List<String>.from(map['commentIds'] as List<String>),
-      imageLinks: List<String>.from(map['imageLinks'] as List<String>),
-    );
+        commentIds: List<String>.from((map['commentIds'] as List<String>)),
+        imageLinks: List<String>.from(
+          (map['imageLinks'] as List<String>),
+        ));
   }
 
   String toJson() => json.encode(toMap());
@@ -129,13 +137,13 @@ class Formulation {
 
   @override
   String toString() {
-    return 'Formulation(recipeName: $recipeName, versions: $versions, revisionDate: $revisionDate, creationDate: $creationDate, strongFlour: $strongFlour, weakFlour: $weakFlour, butter: $butter, sugar: $sugar, salt: $salt, skimMilk: $skimMilk, water: $water, uid: $uid, id: $id, likes: $likes, commentIds: $commentIds, imageLinks: $imageLinks)';
+    return 'Formulation(recipeName: $recipeName, versions: $versions, revisionDate: $revisionDate, creationDate: $creationDate, strongFlour: $strongFlour, weakFlour: $weakFlour, butter: $butter, sugar: $sugar, salt: $salt, skimMilk: $skimMilk, east: $east, water: $water, uid: $uid, id: $id, likes: $likes, commentIds: $commentIds, imageLinks: $imageLinks)';
   }
 
   @override
   bool operator ==(covariant Formulation other) {
     if (identical(this, other)) return true;
-
+  
     return other.recipeName == recipeName &&
         other.versions == versions &&
         other.revisionDate == revisionDate &&
@@ -146,6 +154,7 @@ class Formulation {
         other.sugar == sugar &&
         other.salt == salt &&
         other.skimMilk == skimMilk &&
+        other.east == east &&
         other.water == water &&
         other.uid == uid &&
         other.id == id &&
@@ -166,6 +175,7 @@ class Formulation {
         sugar.hashCode ^
         salt.hashCode ^
         skimMilk.hashCode ^
+        east.hashCode ^
         water.hashCode ^
         uid.hashCode ^
         id.hashCode ^
