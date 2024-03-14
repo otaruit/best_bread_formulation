@@ -1,11 +1,16 @@
 import 'dart:io';
 import 'package:appwrite/appwrite.dart';
+import 'package:best_bread_formulation/constants/assets_constants.dart';
+import 'package:best_bread_formulation/core/utils.dart';
 import 'package:best_bread_formulation/models/formulation_model.dart';
+import 'package:best_bread_formulation/theme/pallete.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:best_bread_formulation/features/formulation_list/controller/formulation_controller.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class CreateFormulationView extends ConsumerStatefulWidget {
   static route() =>
@@ -18,22 +23,22 @@ class CreateFormulationView extends ConsumerStatefulWidget {
 }
 
 class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
+  List<File> images = [];
   final borderStyle = OutlineInputBorder(
     borderRadius: BorderRadius.circular(16),
     borderSide: const BorderSide(
       width: 1,
     ),
   );
-  final TextEditingController formulationTextController =
+  final formulationTextController =
       TextEditingController();
-  final TextEditingController strongFlourController = TextEditingController();
-  final TextEditingController weakFlourController = TextEditingController();
-  final TextEditingController waterController = TextEditingController();
-  final TextEditingController yeastController = TextEditingController();
-  final TextEditingController butterController = TextEditingController();
-  final TextEditingController sugarController = TextEditingController();
-  final TextEditingController skimMilkController = TextEditingController();
-  List<File> images = [];
+  final strongFlourController = TextEditingController();
+  final weakFlourController = TextEditingController();
+  final waterController = TextEditingController();
+  final yeastController = TextEditingController();
+  final butterController = TextEditingController();
+  final sugarController = TextEditingController();
+  final skimMilkController = TextEditingController();
 
   void submitFormulation() {
     if (formulationTextController.text.isEmpty) {
@@ -79,16 +84,14 @@ class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
     );
     ref
         .read(FormulationControllerProvider.notifier)
-        .submitFormulation(formulation: submitFormulation, context: context);
+        .submitFormulation(
+        formulation: submitFormulation, context: context, images: images);
     Navigator.pop(context);
   }
 
-  File? _image;
-
-  void _setImage(File image) {
-    setState(() {
-      _image = image;
-    });
+  void onPickImages() async {
+    images = await pickImages();
+    setState(() {});
   }
 
   @override
@@ -280,36 +283,72 @@ class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
                     Text('g'),
                   ],
                 ),
-                SizedBox(width: 16.0),
-                ElevatedButton(
-                  onPressed: () {
-                    // Add image upload functionality
-                    // For demonstration, here we just use a placeholder image
-                    File image = File('assets/placeholder_image.jpg');
-                    _setImage(image);
-                  },
-                  child: Text('画像を選択'),
+                  SizedBox(height: 16.0),
+                  if (images.isNotEmpty)
+                    CarouselSlider(
+                        items: images.map(
+                          (file) {
+                            return Container(
+                                width: MediaQuery.of(context).size.width,
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 5,
+                                ),
+                                child: Image.file(file));
+                          },
+                        ).toList(),
+                        options: CarouselOptions(
+                          enableInfiniteScroll: false,
+                        )),
+                  ElevatedButton(
+                    onPressed: onPickImages,
+                    child: Text('画像を選択'),
+                  ),
+                  ElevatedButton(
+                    onPressed: submitFormulation,
+                    child: Text('投稿する'),
+                  ),
+                ])),
+      ),
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.only(bottom: 10),
+        decoration: const BoxDecoration(
+            border: Border(
+                top: BorderSide(
+          color: Pallete.greyColor,
+          width: 0.3,
+        ))),
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0).copyWith(left: 15, right: 15),
+              child: GestureDetector(
+                onTap: onPickImages,
+                child: SvgPicture.asset(
+                  AssetsConstants.bread,
+                  width: 24, // SVGのサイズを調整する必要がある場合はここで調整してください
+                  height: 24,
                 ),
-                SizedBox(height: 16.0),
-                _image == null
-                    ? const Text('now Loading')
-                    : Container(
-                        margin: EdgeInsets.symmetric(vertical: 8.0),
-                        height: 100,
-                        width: 100,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8.0),
-                          image: DecorationImage(
-                            image: FileImage(_image!),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                ElevatedButton(
-                  onPressed: submitFormulation,
-                  child: Text('投稿する'),
-                ),
-              ]),
-        )));
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0).copyWith(left: 15, right: 15),
+              child: SvgPicture.asset(
+                AssetsConstants.bread2,
+                width: 24,
+                height: 24,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0).copyWith(left: 15, right: 15),
+              child: SvgPicture.asset(
+                AssetsConstants.bread,
+                width: 24,
+                height: 24,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

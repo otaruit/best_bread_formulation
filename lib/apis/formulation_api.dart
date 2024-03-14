@@ -28,7 +28,7 @@ class FormulationAPI implements IFormulationAPI {
   Future<List<Document>> getFormulations() async {
     final documents = await _db.listDocuments(
       databaseId: AppwriteConstants.databaseId,
-      collectionId: AppwriteConstants.formulationCollection,
+      collectionId: AppwriteConstants.formulationCollectionId,
       queries: [
         Query.orderDesc('creationDate'),
       ],
@@ -41,7 +41,7 @@ class FormulationAPI implements IFormulationAPI {
     try {
       final document = await _db.createDocument(
           databaseId: AppwriteConstants.databaseId,
-          collectionId: AppwriteConstants.formulationCollection,
+          collectionId: AppwriteConstants.formulationCollectionId,
           documentId: ID.unique(),
           data: formulation.toMap());
       return right(document);

@@ -1,4 +1,5 @@
 import 'package:best_bread_formulation/constants/assets_constants.dart';
+import 'package:best_bread_formulation/features/auth/view/signup_view.dart';
 import 'package:best_bread_formulation/theme/pallete.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -11,7 +12,8 @@ class UIConstants {
     return AppBar(
       title: SvgPicture.asset(
         AssetsConstants.bread,
-        height: 30,colorFilter: ColorFilter.mode(Pallete.blueColor, BlendMode.srcIn),
+        height: 30,
+        colorFilter: ColorFilter.mode(Pallete.redColor, BlendMode.srcOut),
       ),
       centerTitle: true,
     );
@@ -19,5 +21,6 @@ class UIConstants {
 
   static const List<Widget> bottomTabBarPages = [
     FormulationList(),
+    SignUpView(),
   ];
 }

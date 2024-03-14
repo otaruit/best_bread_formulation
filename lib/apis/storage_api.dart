@@ -2,10 +2,11 @@ import 'dart:io';
 
 import 'package:appwrite/appwrite.dart';
 import 'package:best_bread_formulation/constants/appwrite_constants.dart';
+import 'package:best_bread_formulation/core/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final StorageAPIProvider = Provider((ref) {
-  return;
+final storageAPIProvider = Provider((ref) {
+  return StorageAPI(storage: ref.watch(appwriteStorageProvider));
 });
 
 class StorageAPI {
