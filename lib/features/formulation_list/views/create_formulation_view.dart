@@ -3,6 +3,7 @@ import 'package:appwrite/appwrite.dart';
 import 'package:best_bread_formulation/models/formulation_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:best_bread_formulation/features/formulation_list/controller/formulation_controller.dart';
 
@@ -23,31 +24,59 @@ class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
       width: 1,
     ),
   );
-  final formulationTextController = TextEditingController();
-  final _formKey = GlobalKey();
-  var _label = '検証';
+  final TextEditingController formulationTextController =
+      TextEditingController();
+  final TextEditingController strongFlourController = TextEditingController();
+  final TextEditingController weakFlourController = TextEditingController();
+  final TextEditingController waterController = TextEditingController();
+  final TextEditingController yeastController = TextEditingController();
+  final TextEditingController butterController = TextEditingController();
+  final TextEditingController sugarController = TextEditingController();
+  final TextEditingController skimMilkController = TextEditingController();
   List<File> images = [];
 
-
   void submitFormulation() {
+    if (formulationTextController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('レシピ名を入力してください'),
+        ),
+      );
+      return;
+    }
+
+    // コントローラーの値が空の場合は'0'に設定
+    final strongFlour =
+        strongFlourController.text.isEmpty ? '0' : strongFlourController.text;
+    final weakFlour =
+        weakFlourController.text.isEmpty ? '0' : weakFlourController.text;
+    final butter = butterController.text.isEmpty ? '0' : butterController.text;
+    final sugar = sugarController.text.isEmpty ? '0' : sugarController.text;
+    final skimMilk =
+        skimMilkController.text.isEmpty ? '0' : skimMilkController.text;
+    final yeast = yeastController.text.isEmpty ? '0' : yeastController.text;
+    final water = waterController.text.isEmpty ? '0' : waterController.text;
+
     final submitFormulation = Formulation(
-        recipeName: formulationTextController.text,
-        versions: 1,
-        revisionDate: DateTime.now(),
-        creationDate: DateTime.now(),
-        strongFlour: 0,
-        weakFlour: 0,
-        butter: 0,
-        sugar: 0,
-        salt: 0,
-        skimMilk: 0,
-        east: 0,
-        water: 0,
-        uid: '',
-        id: ID.unique(),
-        likes: List.empty(),
-        commentIds: List.empty(),
-        imageLinks: List.empty());
+      recipeName: formulationTextController.text,
+      strongFlour: int.parse(strongFlour),
+      weakFlour: int.parse(weakFlour),
+      butter: int.parse(butter),
+      sugar: int.parse(sugar),
+      salt:
+          0, // You may need to add controllers for salt, skim milk, yeast, water
+      skimMilk: int.parse(skimMilk),
+      east: int.parse(yeast),
+      water: int.parse(water),
+      versions: 1,
+      revisionDate: DateTime.now(),
+      creationDate: DateTime.now(),
+      uid: '',
+      id: ID.unique(),
+      likes: List.empty(),
+      commentIds: List.empty(),
+      imageLinks: List.empty(),
+    );
     ref
         .read(FormulationControllerProvider.notifier)
         .submitFormulation(formulation: submitFormulation, context: context);
@@ -64,8 +93,15 @@ class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
 
   @override
   void dispose() {
-    super.dispose();
     formulationTextController.dispose();
+    strongFlourController.dispose();
+    weakFlourController.dispose();
+    waterController.dispose();
+    yeastController.dispose();
+    butterController.dispose();
+    sugarController.dispose();
+    skimMilkController.dispose();
+    super.dispose();
   }
 
   @override
@@ -103,21 +139,13 @@ class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'レシピ名',
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                    SizedBox(width: 16.0),
-                    Expanded(
-                      child: TextFormField(
-                        controller: formulationTextController,
-                      ),
-                    ),
-                  ],
+                Text(
+                  'レシピ名',
+                  textAlign: TextAlign.left,
+                ),
+                SizedBox(height: 8.0),
+                TextFormField(
+                  controller: formulationTextController,
                 ),
                 SizedBox(height: 16.0),
                 Row(
@@ -130,7 +158,9 @@ class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
                     ),
                     SizedBox(width: 16.0),
                     Expanded(
-                      child: TextFormField(),
+                      child: TextFormField(
+                        controller: strongFlourController,
+                      ),
                     ),
                     SizedBox(width: 8.0),
                     Text('g'),
@@ -147,7 +177,9 @@ class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
                     ),
                     SizedBox(width: 16.0),
                     Expanded(
-                      child: TextFormField(),
+                      child: TextFormField(
+                        controller: weakFlourController,
+                      ),
                     ),
                     SizedBox(width: 8.0),
                     Text('g'),
@@ -164,7 +196,9 @@ class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
                     ),
                     SizedBox(width: 16.0),
                     Expanded(
-                      child: TextFormField(),
+                      child: TextFormField(
+                        controller: waterController,
+                      ),
                     ),
                     SizedBox(width: 8.0),
                     Text('ml'),
@@ -181,7 +215,9 @@ class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
                     ),
                     SizedBox(width: 16.0),
                     Expanded(
-                      child: TextFormField(),
+                      child: TextFormField(
+                        controller: yeastController,
+                      ),
                     ),
                     SizedBox(width: 8.0),
                     Text('g'),
@@ -198,7 +234,9 @@ class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
                     ),
                     SizedBox(width: 16.0),
                     Expanded(
-                      child: TextFormField(),
+                      child: TextFormField(
+                        controller: butterController,
+                      ),
                     ),
                     SizedBox(width: 8.0),
                     Text('g'),
@@ -215,7 +253,9 @@ class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
                     ),
                     SizedBox(width: 16.0),
                     Expanded(
-                      child: TextFormField(),
+                      child: TextFormField(
+                        controller: sugarController,
+                      ),
                     ),
                     SizedBox(width: 8.0),
                     Text('g'),
@@ -228,11 +268,13 @@ class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
                       child: Text(
                         'スキムミルク',
                         textAlign: TextAlign.left,
+                      ),
                     ),
-                  ),
                     SizedBox(width: 16.0),
                     Expanded(
-                      child: TextFormField(),
+                      child: TextFormField(
+                        controller: skimMilkController,
+                      ),
                     ),
                     SizedBox(width: 8.0),
                     Text('g'),
@@ -264,10 +306,7 @@ class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
                         ),
                       ),
                 ElevatedButton(
-                  onPressed: () {
-                    // ボタンが押されたときの処理を記述
-                    print('投稿ボタンが押されました');
-                  },
+                  onPressed: submitFormulation,
                   child: Text('投稿する'),
                 ),
               ]),

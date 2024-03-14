@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:best_bread_formulation/apis/formulation_api.dart';
 import 'package:best_bread_formulation/models/formulation_model.dart';
 import 'package:flutter/material.dart';
@@ -33,8 +31,7 @@ class FormulationController extends StateNotifier<bool> {
     Formulation submitFormulation = formulation.copyWith();
     final res = await _formulationAPI.submitFormulation(submitFormulation);
     res.fold(
-        (l) => ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(l.message))), (r) {
+        (l) => print(l.message), (r) {
       return null;
     });
     state = false;
