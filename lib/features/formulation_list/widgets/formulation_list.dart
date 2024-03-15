@@ -13,7 +13,9 @@ class FormulationList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ref.watch(getFormulationListProvider).when(
         data: (formulationList) {
-          return ListView.builder(itemBuilder: (context, index) {
+          return ListView.builder(
+              itemCount: formulationList.length,
+              itemBuilder: (context, index) {
             final formulation = formulationList[index];
             return FormulationCard(formulation: formulation);
           });

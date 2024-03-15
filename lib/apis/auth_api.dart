@@ -1,9 +1,8 @@
 import 'package:appwrite/appwrite.dart';
-import 'package:appwrite/models.dart';
-import 'package:best_bread_formulation/core/failure.dart';
+import 'package:appwrite/models.dart' as model;
+import 'package:best_bread_formulation/core/core.dart';
 import 'package:best_bread_formulation/core/providers.dart';
 import 'package:best_bread_formulation/core/type_defs.dart';
-import 'package:best_bread_formulation/features/auth/view/signup_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 
@@ -13,10 +12,11 @@ final authAPIProvider = Provider((ref) {
 });
 
 abstract class IAuthAPI {
-  FutureEither<User> signUp({required String email, required String password});
-  FutureEither<Session> login(
+  FutureEither<model.User?> signUp(
       {required String email, required String password});
-  Future<User?> currentUserAccount();
+  FutureEither<model.Session> login(
+      {required String email, required String password});
+  Future<model.User?> currentUserAccount();
   FutureEitherVoid logout();
 }
 
@@ -25,23 +25,25 @@ class AuthAPI implements IAuthAPI {
   AuthAPI({required Account account}) : _account = account;
 
   @override
-  FutureEither<User> signUp(
+  FutureEither<model.User?> signUp(
       {required String email, required String password}) async {
     try {
-      final account = await _account.create(
-          userId: ID.unique(), email: email, password: password, name: email);
-      return right(account);
+      final user = await _account.create(
+          userId: ID.unique(), email: email, password: password);
+      return right(user);
     } on AppwriteException catch (e, stackTrace) {
-      return left(Failure(
-          message: e.message ?? 'Some unexpected error occurred',
-          stackTrace: stackTrace));
+      return left(
+        Failure(e.message ?? 'Some unexpected error occurred', stackTrace),
+      );
     } catch (e, stackTrace) {
-      return left(Failure(message: e.toString(), stackTrace: stackTrace));
+      return left(
+        Failure(e.toString(), stackTrace),
+      );
     }
   }
 
   @override
-  Future<User?> currentUserAccount() async {
+  Future<model.User?> currentUserAccount() async {
     try {
       return await _account.get();
     } on AppwriteException {
@@ -52,7 +54,7 @@ class AuthAPI implements IAuthAPI {
   }
 
   @override
-  FutureEither<Session> login(
+  FutureEither<model.Session> login(
       {required String email, required String password}) async {
     try {
       final account = await _account.createEmailPasswordSession(
@@ -60,9 +62,9 @@ class AuthAPI implements IAuthAPI {
       return right(account);
     } on AppwriteException catch (e, stackTrace) {
       return left(Failure(
-          message: e.message ?? 'ログイン中に問題が発生しました', stackTrace: stackTrace));
+          e.message ?? 'ログイン中に問題が発生しました', stackTrace));
     } catch (e, stackTrace) {
-      return left(Failure(message: e.toString(), stackTrace: stackTrace));
+      return left(Failure(e.toString(), stackTrace));
     }
   }
 
@@ -73,9 +75,9 @@ class AuthAPI implements IAuthAPI {
       return account;
     } on AppwriteException catch (e, stackTrace) {
       return left(Failure(
-          message: e.message ?? 'ログアウト中に問題が発生しました', stackTrace: stackTrace));
+         e.message ?? 'ログアウト中に問題が発生しました', stackTrace));
     } catch (e, stackTrace) {
-      return left(Failure(message: e.toString(), stackTrace: stackTrace));
+      return left(Failure(e.toString(), stackTrace));
     }
   }
 }

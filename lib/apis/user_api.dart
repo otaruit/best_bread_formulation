@@ -30,9 +30,9 @@ class UserAPI extends IUserAPI {
       return right(null);
     } on AppwriteException catch (e, st) {
       return left(
-          Failure(message: e.message ?? "サインアップ中にエラーが発生しました", stackTrace: st));
+          Failure(e.message ?? "サインアップ中にエラーが発生しました", st));
     } catch (e, st) {
-      return left(Failure(message: e.toString(), stackTrace: st));
+      return left(Failure(e.toString(), st));
     }
   }
 }

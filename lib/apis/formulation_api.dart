@@ -47,10 +47,9 @@ class FormulationAPI implements IFormulationAPI {
       return right(document);
     } on AppwriteException catch (e, st) {
       return left(Failure(
-          message: e.message ?? "Some unexpected error occurred",
-          stackTrace: st));
+          e.message ?? "Some unexpected error occurred", st));
     } catch (e, st) {
-      return left(Failure(message: e.toString(), stackTrace: st));
+      return left(Failure(e.toString(), st));
     }
   }
 }

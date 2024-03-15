@@ -1,15 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 @immutable
 class Formulation {
   final String recipeName;
   final int versions;
-  final DateTime revisionDate;
-  final DateTime creationDate;
+  final DateTime? revisionDate;
+  final DateTime? creationDate;
   final int strongFlour;
   final int weakFlour;
   final int butter;
@@ -23,7 +21,7 @@ class Formulation {
   final List<String> likes;
   final List<String> commentIds;
   final List<String> imageLinks;
-  Formulation({
+  const Formulation({
     required this.recipeName,
     required this.versions,
     required this.revisionDate,
@@ -87,8 +85,8 @@ class Formulation {
     return <String, dynamic>{
       'recipeName': recipeName,
       'versions': versions,
-      'revisionDate': revisionDate.millisecondsSinceEpoch,
-      'creationDate': creationDate.millisecondsSinceEpoch,
+      'revisionDate': revisionDate!.millisecondsSinceEpoch,
+      'creationDate': creationDate!.millisecondsSinceEpoch,
       'strongFlour': strongFlour,
       'weakFlour': weakFlour,
       'butter': butter,
@@ -107,27 +105,26 @@ class Formulation {
 
   factory Formulation.fromMap(Map<String, dynamic> map) {
     return Formulation(
-      recipeName: map['recipeName'] as String,
-      versions: map['versions'] as int,
+      recipeName: map['recipeName'] ?? '',
+      versions: map['versions']?.toInt() ?? 0,
         revisionDate:
-            DateTime.fromMillisecondsSinceEpoch(map['revisionDate'] as int),
+            DateTime.fromMillisecondsSinceEpoch(map['revisionDate']),
         creationDate:
-            DateTime.fromMillisecondsSinceEpoch(map['creationDate'] as int),
-      strongFlour: map['strongFlour'] as int,
-      weakFlour: map['weakFlour'] as int,
-      butter: map['butter'] as int,
-      sugar: map['sugar'] as int,
-      salt: map['salt'] as int,
-      skimMilk: map['skimMilk'] as int,
-        east: map['east'] as int,
-      water: map['water'] as int,
-      uid: map['uid'] as String,
-      id: map['id'] as String,
-      likes: List<String>.from((map['likes'] as List<String>)),
-        commentIds: List<String>.from((map['commentIds'] as List<String>)),
-        imageLinks: List<String>.from(
-          (map['imageLinks'] as List<String>),
-        ));
+            DateTime.fromMillisecondsSinceEpoch(map['creationDate']),
+      strongFlour: map['strongFlour']?.toInt() ?? 0,
+      weakFlour: map['weakFlour']?.toInt() ?? 0,
+      butter: map['butter']?.toInt() ?? 0,
+      sugar: map['sugar']?.toInt() ?? 0,
+      salt: map['salt']?.toInt() ?? 0,
+      skimMilk: map['skimMilk']?.toInt() ?? 0,
+      east: map['east']?.toInt() ?? 0,
+      water: map['water']?.toInt() ?? 0,
+      uid: map['uid'] ?? '',
+      id: map['\$id'] ?? '',
+      likes: List<String>.from(map['likes']),
+      commentIds: List<String>.from(map['commentIds']),
+      imageLinks: List<String>.from(map['imageLinks']),
+    );
   }
 
   String toJson() => json.encode(toMap());
