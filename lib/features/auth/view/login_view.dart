@@ -22,6 +22,14 @@ class _LoginViewState extends ConsumerState<LoginView> {
   final passwordController = TextEditingController();
   final appbar = UIConstants.appBar();
 
+  @override
+  void dispose() {
+    super.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+  }
+
+
   void login() {
     ref.read(authControllerProvider.notifier).login(
         email: emailController.text,

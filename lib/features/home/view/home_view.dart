@@ -1,6 +1,6 @@
 import 'package:best_bread_formulation/constants/assets_constants.dart';
 import 'package:best_bread_formulation/constants/ui_constants.dart';
-import 'package:best_bread_formulation/features/formulation_list/views/create_formulation_view.dart';
+import 'package:best_bread_formulation/features/formulation/views/create_formulation_view.dart';
 import 'package:best_bread_formulation/theme/pallete.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -61,13 +61,15 @@ class _HomeViewState extends State<HomeView> {
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
-              AssetsConstants.bread,
+              AssetsConstants.noImage,
             ),
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               _page == 2
-                  ? AssetsConstants.bread2 : AssetsConstants.bread2,
+                  ? AssetsConstants.bread2 : AssetsConstants.noImage,
+              colorFilter:
+                  ColorFilter.mode(Pallete.whiteColor, BlendMode.colorDodge),
             ),
           ),
         ],

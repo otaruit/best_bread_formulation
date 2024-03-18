@@ -4,7 +4,7 @@ import 'package:best_bread_formulation/theme/pallete.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../features/formulation_list/widgets/formulation_list.dart';
+import '../features/formulation/widgets/formulation_list.dart';
 
 
 class UIConstants {

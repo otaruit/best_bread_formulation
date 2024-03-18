@@ -25,9 +25,9 @@ class _SignUpViewState extends ConsumerState<SignUpView> {
 
   @override
   void dispose() {
+    super.dispose();
     emailController.dispose();
     passwordController.dispose();
-    super.dispose();
   }
 
   void signUp() {

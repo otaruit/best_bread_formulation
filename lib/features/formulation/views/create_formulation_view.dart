@@ -9,7 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:best_bread_formulation/features/formulation_list/controller/formulation_controller.dart';
+import 'package:best_bread_formulation/features/formulation/controller/formulation_controller.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class CreateFormulationView extends ConsumerStatefulWidget {
@@ -30,8 +30,7 @@ class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
       width: 1,
     ),
   );
-  final formulationTextController =
-      TextEditingController();
+  final formulationTextController = TextEditingController();
   final strongFlourController = TextEditingController();
   final weakFlourController = TextEditingController();
   final waterController = TextEditingController();
@@ -82,9 +81,7 @@ class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
       commentIds: List.empty(),
       imageLinks: List.empty(),
     );
-    ref
-        .read(FormulationControllerProvider.notifier)
-        .submitFormulation(
+    ref.read(FormulationControllerProvider.notifier).submitFormulation(
         formulation: submitFormulation, context: context, images: images);
     Navigator.pop(context);
   }
@@ -110,179 +107,181 @@ class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.close,
-              size: 30,
-            ),
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.close,
+            size: 30,
           ),
-          actions: [
-            ElevatedButton(
-                onPressed: () {},
-                child: const Text('OK'),
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.white,
-                  onPrimary: Colors.black,
-                  shape: const CircleBorder(
-                    side: BorderSide(
-                      color: Colors.black,
-                      width: 1,
-                      style: BorderStyle.solid,
-                    ),
-                  ),
-                ))
-          ],
         ),
-        body: SafeArea(
-            child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  'レシピ名',
-                  textAlign: TextAlign.left,
+        actions: [
+          ElevatedButton(
+              onPressed: () {},
+              child: const Text('OK'),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.white,
+                onPrimary: Colors.black,
+                shape: const CircleBorder(
+                  side: BorderSide(
+                    color: Colors.black,
+                    width: 1,
+                    style: BorderStyle.solid,
+                  ),
                 ),
-                SizedBox(height: 8.0),
-                TextFormField(
-                  controller: formulationTextController,
-                ),
-                SizedBox(height: 16.0),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        '強力粉',
-                        textAlign: TextAlign.left,
+              ))
+        ],
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    'レシピ名',
+                    textAlign: TextAlign.left,
+                  ),
+                  SizedBox(height: 8.0),
+                  TextFormField(
+                    controller: formulationTextController,
+                  ),
+                  SizedBox(height: 16.0),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          '強力粉',
+                          textAlign: TextAlign.left,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 16.0),
-                    Expanded(
-                      child: TextFormField(
-                        controller: strongFlourController,
+                      SizedBox(width: 16.0),
+                      Expanded(
+                        child: TextFormField(
+                          controller: strongFlourController,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 8.0),
-                    Text('g'),
-                  ],
-                ),
-                SizedBox(height: 16.0),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        '薄力粉',
-                        textAlign: TextAlign.left,
+                      SizedBox(width: 8.0),
+                      Text('g'),
+                    ],
+                  ),
+                  SizedBox(height: 16.0),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          '薄力粉',
+                          textAlign: TextAlign.left,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 16.0),
-                    Expanded(
-                      child: TextFormField(
-                        controller: weakFlourController,
+                      SizedBox(width: 16.0),
+                      Expanded(
+                        child: TextFormField(
+                          controller: weakFlourController,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 8.0),
-                    Text('g'),
-                  ],
-                ),
-                SizedBox(height: 16.0),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        '水',
-                        textAlign: TextAlign.left,
+                      SizedBox(width: 8.0),
+                      Text('g'),
+                    ],
+                  ),
+                  SizedBox(height: 16.0),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          '水',
+                          textAlign: TextAlign.left,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 16.0),
-                    Expanded(
-                      child: TextFormField(
-                        controller: waterController,
+                      SizedBox(width: 16.0),
+                      Expanded(
+                        child: TextFormField(
+                          controller: waterController,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 8.0),
-                    Text('ml'),
-                  ],
-                ),
-                SizedBox(height: 16.0),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'イースト',
-                        textAlign: TextAlign.left,
+                      SizedBox(width: 8.0),
+                      Text('ml'),
+                    ],
+                  ),
+                  SizedBox(height: 16.0),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'イースト',
+                          textAlign: TextAlign.left,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 16.0),
-                    Expanded(
-                      child: TextFormField(
-                        controller: yeastController,
+                      SizedBox(width: 16.0),
+                      Expanded(
+                        child: TextFormField(
+                          controller: yeastController,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 8.0),
-                    Text('g'),
-                  ],
-                ),
-                SizedBox(height: 16.0),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'バター',
-                        textAlign: TextAlign.left,
+                      SizedBox(width: 8.0),
+                      Text('g'),
+                    ],
+                  ),
+                  SizedBox(height: 16.0),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'バター',
+                          textAlign: TextAlign.left,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 16.0),
-                    Expanded(
-                      child: TextFormField(
-                        controller: butterController,
+                      SizedBox(width: 16.0),
+                      Expanded(
+                        child: TextFormField(
+                          controller: butterController,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 8.0),
-                    Text('g'),
-                  ],
-                ),
-                SizedBox(height: 16.0),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        '砂糖',
-                        textAlign: TextAlign.left,
+                      SizedBox(width: 8.0),
+                      Text('g'),
+                    ],
+                  ),
+                  SizedBox(height: 16.0),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          '砂糖',
+                          textAlign: TextAlign.left,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 16.0),
-                    Expanded(
-                      child: TextFormField(
-                        controller: sugarController,
+                      SizedBox(width: 16.0),
+                      Expanded(
+                        child: TextFormField(
+                          controller: sugarController,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 8.0),
-                    Text('g'),
-                  ],
-                ),
-                SizedBox(height: 16.0),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'スキムミルク',
-                        textAlign: TextAlign.left,
+                      SizedBox(width: 8.0),
+                      Text('g'),
+                    ],
+                  ),
+                  SizedBox(height: 16.0),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'スキムミルク',
+                          textAlign: TextAlign.left,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 16.0),
-                    Expanded(
-                      child: TextFormField(
-                        controller: skimMilkController,
+                      SizedBox(width: 16.0),
+                      Expanded(
+                        child: TextFormField(
+                          controller: skimMilkController,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 8.0),
-                    Text('g'),
-                  ],
-                ),
+                      SizedBox(width: 8.0),
+                      Text('g'),
+                    ],
+                  ),
                   SizedBox(height: 16.0),
                   if (images.isNotEmpty)
                     CarouselSlider(
