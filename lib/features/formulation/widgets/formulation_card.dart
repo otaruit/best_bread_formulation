@@ -68,11 +68,8 @@ class FormulationCard extends ConsumerWidget {
                       fit: BoxFit.cover,
                     )
                   : SvgPicture.asset(
-                      AssetsConstants.noImage,
-                      width: 150,
-                      height: 150,
-                      colorFilter:
-                          ColorFilter.mode(Pallete.whiteColor, BlendMode.srcIn),
+                      AssetsConstants.bread3,
+                      width: 30.0, height: 30.0
                     ),
             ),
             SizedBox(

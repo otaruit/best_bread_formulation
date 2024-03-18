@@ -57,19 +57,22 @@ class _HomeViewState extends State<HomeView> {
             icon: SvgPicture.asset(
               _page == 0
                   ? AssetsConstants.bread2 : AssetsConstants.bread2,
+                width: 30.0,
+                height: 30.0
             ),
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
-              AssetsConstants.noImage,
+              AssetsConstants.bread4,
+                width: 30.0, height: 30.0
             ),
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               _page == 2
-                  ? AssetsConstants.bread2 : AssetsConstants.noImage,
-              colorFilter:
-                  ColorFilter.mode(Pallete.whiteColor, BlendMode.colorDodge),
+                  ? AssetsConstants.bread2 : AssetsConstants.bread3,
+                width: 30.0,
+                height: 30.0
             ),
           ),
         ],

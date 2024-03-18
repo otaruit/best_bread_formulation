@@ -11,9 +11,9 @@ class UIConstants {
   static AppBar appBar() {
     return AppBar(
       title: SvgPicture.asset(
-        AssetsConstants.bread,
+        AssetsConstants.bread3,
         height: 30,
-        colorFilter: ColorFilter.mode(Pallete.redColor, BlendMode.srcOut),
+        colorFilter: const ColorFilter.mode(Pallete.greyColor, BlendMode.dst),
       ),
       centerTitle: true,
     );

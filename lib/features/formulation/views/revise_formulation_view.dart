@@ -54,7 +54,7 @@ class _CreateFormulationViewState extends ConsumerState<ReviseFormulationView> {
     super.initState();
     receipeNameController =
         TextEditingController(text: widget.formulation.recipeName);
-versionController =
+    versionController =
         TextEditingController(text: widget.formulation.versions.toString());
     strongFlourController =
         TextEditingController(text: widget.formulation.strongFlour.toString());
@@ -85,7 +85,7 @@ versionController =
     // コントローラーの値が空の場合は'0'に設定
     final strongFlour =
         strongFlourController.text.isEmpty ? '0' : strongFlourController.text;
-final versions =
+    final versions =
         versionController.text.isEmpty ? '0' : versionController.text;
     final weakFlour =
         weakFlourController.text.isEmpty ? '0' : weakFlourController.text;
@@ -126,7 +126,7 @@ final versions =
     setState(() {});
   }
 
-void onVersionChanged(String? value) {
+  void onVersionChanged(String? value) {
     if (value != null) {
       setState(() {
         versionController.text = value;
@@ -134,16 +134,15 @@ void onVersionChanged(String? value) {
     }
   }
 
-  static String getNextVersion(String currentVersion) {
+  static List<String> getNextVersion(String currentVersion) {
+    List<String> versionList = [];
     final List<String> versionParts = currentVersion.split('.');
     final int major = int.parse(versionParts[0]);
     final int minor = int.parse(versionParts[1]);
 
-    if (minor == 9) {
-      return '${major + 1}.0';
-    } else {
-      return '$major.${minor + 1}';
-    }
+    versionList.add('$major.${minor + 1}');
+    versionList.add('${major + 1}.0');
+    return versionList;
   }
 
   @override
@@ -161,10 +160,6 @@ void onVersionChanged(String? value) {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> versionOptions = [
-      widget.formulation.versions.toString(),
-      VersionUtil.getNextVersion(widget.formulation.versions.toString()),
-    ];
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -195,17 +190,17 @@ void onVersionChanged(String? value) {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    'レシピ名',
-                    textAlign: TextAlign.left,
-                  ),
-                  SizedBox(height: 8.0),
-                  TextFormField(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'レシピ名',
+                textAlign: TextAlign.left,
+              ),
+              SizedBox(height: 8.0),
+              TextFormField(
                 controller: receipeNameController,
               ),
               Row(
@@ -216,177 +211,177 @@ void onVersionChanged(String? value) {
                       textAlign: TextAlign.left,
                     ),
                   ),
-                  SizedBox(width: 16.0),
                   Expanded(
                     child: DropdownButton<String>(
-                      value: widget.formulation.versions.toString(),
+                        value: getNextVersion(
+                            versionController.text.toString())[0],
                       onChanged: onVersionChanged,
-                      items: versionOptions.map((String value) {
-                        return DropdownMenuItem<String>(
+                        items: getNextVersion(versionController.text.toString())
+                            .map((String value) {
+                          return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
-                        );
-                      }).toList(),
+                          );
+                        }).toList()
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 16.0),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          '強力粉',
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                      SizedBox(width: 16.0),
-                      Expanded(
-                        child: TextFormField(
-                          controller: strongFlourController,
-                        ),
-                      ),
-                      SizedBox(width: 8.0),
-                      Text('g'),
-                    ],
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '強力粉',
+                      textAlign: TextAlign.left,
+                    ),
                   ),
-                  SizedBox(height: 16.0),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          '薄力粉',
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                      SizedBox(width: 16.0),
-                      Expanded(
-                        child: TextFormField(
-                          controller: weakFlourController,
-                        ),
-                      ),
-                      SizedBox(width: 8.0),
-                      Text('g'),
-                    ],
+                  SizedBox(width: 16.0),
+                  Expanded(
+                    child: TextFormField(
+                      controller: strongFlourController,
+                    ),
                   ),
-                  SizedBox(height: 16.0),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          '水',
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                      SizedBox(width: 16.0),
-                      Expanded(
-                        child: TextFormField(
-                          controller: waterController,
-                        ),
-                      ),
-                      SizedBox(width: 8.0),
-                      Text('ml'),
-                    ],
-                  ),
-                  SizedBox(height: 16.0),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          'イースト',
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                      SizedBox(width: 16.0),
-                      Expanded(
-                        child: TextFormField(
-                          controller: yeastController,
-                        ),
-                      ),
-                      SizedBox(width: 8.0),
-                      Text('g'),
-                    ],
-                  ),
-                  SizedBox(height: 16.0),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          'バター',
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                      SizedBox(width: 16.0),
-                      Expanded(
-                        child: TextFormField(
-                          controller: butterController,
-                        ),
-                      ),
-                      SizedBox(width: 8.0),
-                      Text('g'),
-                    ],
-                  ),
-                  SizedBox(height: 16.0),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          '砂糖',
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                      SizedBox(width: 16.0),
-                      Expanded(
-                        child: TextFormField(
-                          controller: sugarController,
-                        ),
-                      ),
-                      SizedBox(width: 8.0),
-                      Text('g'),
-                    ],
-                  ),
-                  SizedBox(height: 16.0),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          'スキムミルク',
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                      SizedBox(width: 16.0),
-                      Expanded(
-                        child: TextFormField(
-                          controller: skimMilkController,
-                        ),
-                      ),
-                      SizedBox(width: 8.0),
-                      Text('g'),
-                    ],
-                  ),
+                  SizedBox(width: 8.0),
+                  Text('g'),
+                ],
+              ),
               SizedBox(height: 16.0),
-                  
-                  if (images.isNotEmpty)
-                    CarouselSlider(
-                        items: images.map(
-                          (file) {
-                            return Container(
-                                width: MediaQuery.of(context).size.width,
-                                margin: const EdgeInsets.symmetric(
-                                  horizontal: 5,
-                                ),
-                                child: Image.file(file));
-                          },
-                        ).toList(),
-                        options: CarouselOptions(
-                          enableInfiniteScroll: false,
-                        )),
-                  ElevatedButton(
-                    onPressed: onPickImages,
-                    child: Text('画像を選択'),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '薄力粉',
+                      textAlign: TextAlign.left,
+                    ),
                   ),
-                  ElevatedButton(
-                    onPressed: submitFormulation,
+                  SizedBox(width: 16.0),
+                  Expanded(
+                    child: TextFormField(
+                      controller: weakFlourController,
+                    ),
+                  ),
+                  SizedBox(width: 8.0),
+                  Text('g'),
+                ],
+              ),
+              SizedBox(height: 16.0),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '水',
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  SizedBox(width: 16.0),
+                  Expanded(
+                    child: TextFormField(
+                      controller: waterController,
+                    ),
+                  ),
+                  SizedBox(width: 8.0),
+                  Text('ml'),
+                ],
+              ),
+              SizedBox(height: 16.0),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'イースト',
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  SizedBox(width: 16.0),
+                  Expanded(
+                    child: TextFormField(
+                      controller: yeastController,
+                    ),
+                  ),
+                  SizedBox(width: 8.0),
+                  Text('g'),
+                ],
+              ),
+              SizedBox(height: 16.0),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'バター',
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  SizedBox(width: 16.0),
+                  Expanded(
+                    child: TextFormField(
+                      controller: butterController,
+                    ),
+                  ),
+                  SizedBox(width: 8.0),
+                  Text('g'),
+                ],
+              ),
+              SizedBox(height: 16.0),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '砂糖',
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  SizedBox(width: 16.0),
+                  Expanded(
+                    child: TextFormField(
+                      controller: sugarController,
+                    ),
+                  ),
+                  SizedBox(width: 8.0),
+                  Text('g'),
+                ],
+              ),
+              SizedBox(height: 16.0),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'スキムミルク',
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  SizedBox(width: 16.0),
+                  Expanded(
+                    child: TextFormField(
+                      controller: skimMilkController,
+                    ),
+                  ),
+                  SizedBox(width: 8.0),
+                  Text('g'),
+                ],
+              ),
+              SizedBox(height: 16.0),
+              if (images.isNotEmpty)
+                CarouselSlider(
+                    items: images.map(
+                      (file) {
+                        return Container(
+                            width: MediaQuery.of(context).size.width,
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 5,
+                            ),
+                            child: Image.file(file));
+                      },
+                    ).toList(),
+                    options: CarouselOptions(
+                      enableInfiniteScroll: false,
+                    )),
+              ElevatedButton(
+                onPressed: onPickImages,
+                child: Text('画像を選択'),
+              ),
+              ElevatedButton(
+                onPressed: submitFormulation,
                 child: Text('改訂版を投稿'),
               ),
             ],
