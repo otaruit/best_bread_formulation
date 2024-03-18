@@ -72,7 +72,7 @@ class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
       skimMilk: int.parse(skimMilk),
       east: int.parse(yeast),
       water: int.parse(water),
-      versions: 1,
+      versions: 1.0,
       revisionDate: DateTime.now(),
       creationDate: DateTime.now(),
       uid: '',
@@ -81,7 +81,7 @@ class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
       commentIds: List.empty(),
       imageLinks: List.empty(),
     );
-    ref.read(FormulationControllerProvider.notifier).submitFormulation(
+    ref.read(formulationControllerProvider.notifier).submitFormulation(
         formulation: submitFormulation, context: context, images: images);
     Navigator.pop(context);
   }

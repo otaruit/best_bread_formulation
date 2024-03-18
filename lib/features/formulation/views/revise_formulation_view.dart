@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:appwrite/appwrite.dart';
 import 'package:best_bread_formulation/constants/assets_constants.dart';
 import 'package:best_bread_formulation/core/utils.dart';
+import 'package:best_bread_formulation/core/version_util.dart';
 import 'package:best_bread_formulation/models/formulation_model.dart';
 import 'package:best_bread_formulation/theme/pallete.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -38,7 +39,8 @@ class _CreateFormulationViewState extends ConsumerState<ReviseFormulationView> {
       width: 1,
     ),
   );
-  late final TextEditingController formulationTextController;
+  late final TextEditingController receipeNameController;
+  late final TextEditingController versionController;
   late final TextEditingController strongFlourController;
   late final TextEditingController weakFlourController;
   late final TextEditingController waterController;
@@ -50,8 +52,10 @@ class _CreateFormulationViewState extends ConsumerState<ReviseFormulationView> {
   @override
   void initState() {
     super.initState();
-    formulationTextController =
+    receipeNameController =
         TextEditingController(text: widget.formulation.recipeName);
+versionController =
+        TextEditingController(text: widget.formulation.versions.toString());
     strongFlourController =
         TextEditingController(text: widget.formulation.strongFlour.toString());
     weakFlourController =
@@ -69,7 +73,7 @@ class _CreateFormulationViewState extends ConsumerState<ReviseFormulationView> {
   }
 
   void submitFormulation() {
-    if (formulationTextController.text.isEmpty) {
+    if (receipeNameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('レシピ名を入力してください'),
@@ -81,6 +85,8 @@ class _CreateFormulationViewState extends ConsumerState<ReviseFormulationView> {
     // コントローラーの値が空の場合は'0'に設定
     final strongFlour =
         strongFlourController.text.isEmpty ? '0' : strongFlourController.text;
+final versions =
+        versionController.text.isEmpty ? '0' : versionController.text;
     final weakFlour =
         weakFlourController.text.isEmpty ? '0' : weakFlourController.text;
     final butter = butterController.text.isEmpty ? '0' : butterController.text;
@@ -91,7 +97,8 @@ class _CreateFormulationViewState extends ConsumerState<ReviseFormulationView> {
     final water = waterController.text.isEmpty ? '0' : waterController.text;
 
     final submitFormulation = Formulation(
-      recipeName: formulationTextController.text,
+      recipeName: receipeNameController.text,
+      versions: double.parse(versions),
       strongFlour: int.parse(strongFlour),
       weakFlour: int.parse(weakFlour),
       butter: int.parse(butter),
@@ -101,7 +108,6 @@ class _CreateFormulationViewState extends ConsumerState<ReviseFormulationView> {
       skimMilk: int.parse(skimMilk),
       east: int.parse(yeast),
       water: int.parse(water),
-      versions: 1,
       revisionDate: DateTime.now(),
       creationDate: DateTime.now(),
       uid: '',
@@ -110,7 +116,7 @@ class _CreateFormulationViewState extends ConsumerState<ReviseFormulationView> {
       commentIds: List.empty(),
       imageLinks: List.empty(),
     );
-    ref.read(FormulationControllerProvider.notifier).submitFormulation(
+    ref.read(formulationControllerProvider.notifier).submitFormulation(
         formulation: submitFormulation, context: context, images: images);
     Navigator.pop(context);
   }
@@ -120,9 +126,29 @@ class _CreateFormulationViewState extends ConsumerState<ReviseFormulationView> {
     setState(() {});
   }
 
+void onVersionChanged(String? value) {
+    if (value != null) {
+      setState(() {
+        versionController.text = value;
+      });
+    }
+  }
+
+  static String getNextVersion(String currentVersion) {
+    final List<String> versionParts = currentVersion.split('.');
+    final int major = int.parse(versionParts[0]);
+    final int minor = int.parse(versionParts[1]);
+
+    if (minor == 9) {
+      return '${major + 1}.0';
+    } else {
+      return '$major.${minor + 1}';
+    }
+  }
+
   @override
   void dispose() {
-    formulationTextController.dispose();
+    receipeNameController.dispose();
     strongFlourController.dispose();
     weakFlourController.dispose();
     waterController.dispose();
@@ -135,6 +161,10 @@ class _CreateFormulationViewState extends ConsumerState<ReviseFormulationView> {
 
   @override
   Widget build(BuildContext context) {
+    final List<String> versionOptions = [
+      widget.formulation.versions.toString(),
+      VersionUtil.getNextVersion(widget.formulation.versions.toString()),
+    ];
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -176,9 +206,32 @@ class _CreateFormulationViewState extends ConsumerState<ReviseFormulationView> {
                   ),
                   SizedBox(height: 8.0),
                   TextFormField(
-                    controller: formulationTextController,
+                controller: receipeNameController,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'バージョン',
+                      textAlign: TextAlign.left,
+                    ),
                   ),
-                  SizedBox(height: 16.0),
+                  SizedBox(width: 16.0),
+                  Expanded(
+                    child: DropdownButton<String>(
+                      value: widget.formulation.versions.toString(),
+                      onChanged: onVersionChanged,
+                      items: versionOptions.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16.0),
                   Row(
                     children: [
                       Expanded(
@@ -311,7 +364,8 @@ class _CreateFormulationViewState extends ConsumerState<ReviseFormulationView> {
                       Text('g'),
                     ],
                   ),
-                  SizedBox(height: 16.0),
+              SizedBox(height: 16.0),
+                  
                   if (images.isNotEmpty)
                     CarouselSlider(
                         items: images.map(
@@ -333,18 +387,22 @@ class _CreateFormulationViewState extends ConsumerState<ReviseFormulationView> {
                   ),
                   ElevatedButton(
                     onPressed: submitFormulation,
-                    child: Text('投稿する'),
-                  ),
-                ])),
+                child: Text('改訂版を投稿'),
+              ),
+            ],
+          ),
+        ),
       ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.only(bottom: 10),
         decoration: const BoxDecoration(
-            border: Border(
-                top: BorderSide(
-          color: Pallete.greyColor,
-          width: 0.3,
-        ))),
+          border: Border(
+            top: BorderSide(
+              color: Pallete.greyColor,
+              width: 0.3,
+            ),
+          ),
+        ),
         child: Row(
           children: [
             Padding(
@@ -353,7 +411,7 @@ class _CreateFormulationViewState extends ConsumerState<ReviseFormulationView> {
                 onTap: onPickImages,
                 child: SvgPicture.asset(
                   AssetsConstants.bread,
-                  width: 24, // SVGのサイズを調整する必要がある場合はここで調整してください
+                  width: 24,
                   height: 24,
                 ),
               ),

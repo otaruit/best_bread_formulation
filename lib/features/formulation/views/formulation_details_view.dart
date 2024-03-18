@@ -39,9 +39,7 @@ class FormulationDetailsView extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(children: [
+                  Row(children: [
                       Text(
                         '${formulation.recipeName}',
                         style: TextStyle(
@@ -49,22 +47,27 @@ class FormulationDetailsView extends ConsumerWidget {
                           fontSize: 22,
                         ),
                       ),
-                      IconButton(
-                        icon: Icon(Icons.edit),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              ReviseFormulationView.route(
-                                  formulation: formulation));
-                        },
+                 
+                    SizedBox(width: 8),
+                    Text(
+                      'var ${formulation.versions}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        textBaseline: TextBaseline.alphabetic, // ベースラインを揃える
                       ),
-                    ]),
-                  ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            ReviseFormulationView.route(
+                                formulation: formulation));
+                      },
+                    ),
+                  ]),
                   SizedBox(height: 8),
-                  _buildItem(
-                    label: 'UID',
-                    value: formulation.uid.toString(),
-                  ),
                   _buildItem(
                     label: '強力粉',
                     value: '${formulation.strongFlour.toString()}g',
@@ -102,11 +105,11 @@ class FormulationDetailsView extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
-                        '${_formDate(formulation.revisionDate)}に更新',
+                        '${_formDate(formulation.revisionDate)}更新',
                         textAlign: TextAlign.right,
                       ),
                       Text(
-                        ' ${_formDate(formulation.creationDate)}に投稿',
+                        ' ${_formDate(formulation.creationDate)}投稿',
                         textAlign: TextAlign.right,
                       ),
                     ],
@@ -132,14 +135,11 @@ class FormulationDetailsView extends ConsumerWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(
-          width: 100,
-          child: Text(
+        Text(
             label,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
+            fontSize: 18,
           ),
         ),
         SizedBox(width: 4),

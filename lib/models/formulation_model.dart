@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 @immutable
 class Formulation {
   final String recipeName;
-  final int versions;
+  final double versions;
   final DateTime? revisionDate;
   final DateTime? creationDate;
   final int strongFlour;
@@ -43,7 +43,7 @@ class Formulation {
 
   Formulation copyWith({
     String? recipeName,
-    int? versions,
+    double? versions,
     DateTime? revisionDate,
     DateTime? creationDate,
     int? strongFlour,
@@ -106,7 +106,7 @@ class Formulation {
   factory Formulation.fromMap(Map<String, dynamic> map) {
     return Formulation(
       recipeName: map['recipeName'] ?? '',
-      versions: map['versions']?.toInt() ?? 0,
+      versions: map['versions']?.toDouble() ?? 0,
         revisionDate:
             DateTime.fromMillisecondsSinceEpoch(map['revisionDate']),
         creationDate:

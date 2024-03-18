@@ -1,9 +1,7 @@
 import 'package:appwrite/models.dart' as model;
 import 'package:best_bread_formulation/apis/auth_api.dart';
 import 'package:best_bread_formulation/apis/user_api.dart';
-import 'package:best_bread_formulation/core/type_defs.dart';
 import 'package:best_bread_formulation/core/utils.dart';
-import 'package:best_bread_formulation/features/auth/view/login_view.dart';
 import 'package:best_bread_formulation/features/home/view/home_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -83,7 +83,6 @@ class FormulationCard extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildItem(label: 'レシピ名', value: formulation.recipeName),
-                  _buildItem(label: 'UID', value: formulation.uid.toString()),
                   _buildItem(
                       label: '強力粉',
                       value: '${formulation.strongFlour.toString()}g'),
@@ -108,11 +107,11 @@ class FormulationCard extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '${_formDate(formulation.revisionDate)}に更新',
+                        '${_formDate(formulation.revisionDate)}更新',
                         textAlign: TextAlign.right,
                       ),
                       Text(
-                        '${_formDate(formulation.creationDate)}に投稿',
+                        '${_formDate(formulation.creationDate)}投稿',
                         textAlign: TextAlign.right,
                       ),
                     ],

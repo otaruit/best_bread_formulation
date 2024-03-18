@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final FormulationControllerProvider =
+final formulationControllerProvider =
     StateNotifierProvider<FormulationController, bool>((ref) {
   return FormulationController(
       ref: ref,
@@ -17,7 +17,7 @@ final FormulationControllerProvider =
 });
 
 final getFormulationListProvider = FutureProvider((ref) async {
-  return ref.watch(FormulationControllerProvider.notifier).getFormulations();
+  return ref.watch(formulationControllerProvider.notifier).getFormulations();
 });
 
 class FormulationController extends StateNotifier<bool> {
