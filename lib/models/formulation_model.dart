@@ -96,7 +96,6 @@ class Formulation {
       'east': east,
       'water': water,
       'uid': uid,
-      'id': id,
       'likes': likes,
       'commentIds': commentIds,
       'imageLinks': imageLinks,

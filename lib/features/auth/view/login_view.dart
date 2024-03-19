@@ -86,6 +86,21 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       Navigator.push(context, SignUpView.route());
                     },
                 )),
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: RichText(
+                    text: TextSpan(
+                  text: 'ログアウト',
+                  style: TextStyle(
+                    color: Pallete.whiteColor,
+                    fontSize: 17,
+                  ),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      ref.read(authControllerProvider.notifier).logout(context);
+                    },
+                )),
               )
             ]),
           )),

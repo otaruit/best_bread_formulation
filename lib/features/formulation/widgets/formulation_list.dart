@@ -2,7 +2,6 @@ import 'package:best_bread_formulation/common/error_page.dart';
 import 'package:best_bread_formulation/common/loading_page.dart';
 import 'package:best_bread_formulation/features/formulation/controller/formulation_controller.dart';
 import 'package:best_bread_formulation/features/formulation/widgets/formulation_card.dart';
-import 'package:best_bread_formulation/models/formulation_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

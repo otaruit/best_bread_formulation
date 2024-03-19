@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:appwrite/appwrite.dart';
 import 'package:best_bread_formulation/constants/assets_constants.dart';
 import 'package:best_bread_formulation/core/utils.dart';
 import 'package:best_bread_formulation/models/formulation_model.dart';
@@ -76,7 +75,7 @@ class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
       revisionDate: DateTime.now(),
       creationDate: DateTime.now(),
       uid: '',
-      id: ID.unique(),
+      id: '',
       likes: List.empty(),
       commentIds: List.empty(),
       imageLinks: List.empty(),
@@ -282,7 +281,26 @@ class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
                       Text('g'),
                     ],
                   ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          '',
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                      SizedBox(width: 16.0),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: onPickImages,
+                          child: Text('画像を選択'),
+                        ),
+                      ),
+                      SizedBox(width: 8.0),
+                    ],
+                  ),
                   SizedBox(height: 16.0),
+              
                   if (images.isNotEmpty)
                     CarouselSlider(
                         items: images.map(
@@ -298,10 +316,7 @@ class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
                         options: CarouselOptions(
                           enableInfiniteScroll: false,
                         )),
-                  ElevatedButton(
-                    onPressed: onPickImages,
-                    child: Text('画像を選択'),
-                  ),
+            
                   ElevatedButton(
                     onPressed: submitFormulation,
                     child: Text('投稿する'),

@@ -42,6 +42,8 @@ class _HomeViewState extends State<HomeView> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: onCreateFormulation,
+        backgroundColor: Pallete.redColor,
+        shape: CircleBorder(),
         child: const Icon(
           Icons.add,
           color: Pallete.whiteColor,
@@ -55,22 +57,20 @@ class _HomeViewState extends State<HomeView> {
         items: [
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
-              _page == 0
-                  ? AssetsConstants.bread2 : AssetsConstants.bread2,
+           AssetsConstants.bread2,
                 width: 30.0,
                 height: 30.0
             ),
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
-              AssetsConstants.bread4,
+              AssetsConstants.bread3,
                 width: 30.0, height: 30.0
             ),
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
-              _page == 2
-                  ? AssetsConstants.bread2 : AssetsConstants.bread3,
+          AssetsConstants.croissant,
                 width: 30.0,
                 height: 30.0
             ),

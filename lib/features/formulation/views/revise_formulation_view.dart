@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:appwrite/appwrite.dart';
 import 'package:best_bread_formulation/constants/assets_constants.dart';
 import 'package:best_bread_formulation/core/utils.dart';
-import 'package:best_bread_formulation/core/version_util.dart';
 import 'package:best_bread_formulation/models/formulation_model.dart';
 import 'package:best_bread_formulation/theme/pallete.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -28,10 +27,19 @@ class ReviseFormulationView extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<ReviseFormulationView> createState() =>
-      _CreateFormulationViewState();
+      _ReviseFormulationViewState();
 }
 
-class _CreateFormulationViewState extends ConsumerState<ReviseFormulationView> {
+class _ReviseFormulationViewState extends ConsumerState<ReviseFormulationView> {
+  int _page = 0;
+  void onPageChange(int index) {
+    setState(() {
+      _page = index;
+    });
+  }
+
+  String selectedVersion = '';
+  bool _isEditingRecipeName = false;
   List<File> images = [];
   final borderStyle = OutlineInputBorder(
     borderRadius: BorderRadius.circular(16),
@@ -129,7 +137,7 @@ class _CreateFormulationViewState extends ConsumerState<ReviseFormulationView> {
   void onVersionChanged(String? value) {
     if (value != null) {
       setState(() {
-        versionController.text = value;
+        selectedVersion = value;
       });
     }
   }
@@ -171,22 +179,6 @@ class _CreateFormulationViewState extends ConsumerState<ReviseFormulationView> {
             size: 30,
           ),
         ),
-        actions: [
-          ElevatedButton(
-              onPressed: () {},
-              child: const Text('OK'),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.white,
-                onPrimary: Colors.black,
-                shape: const CircleBorder(
-                  side: BorderSide(
-                    color: Colors.black,
-                    width: 1,
-                    style: BorderStyle.solid,
-                  ),
-                ),
-              ))
-        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -195,13 +187,25 @@ class _CreateFormulationViewState extends ConsumerState<ReviseFormulationView> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                'レシピ名',
-                textAlign: TextAlign.left,
-              ),
+              Row(children: [
+                Text(
+                  'レシピ名',
+                  textAlign: TextAlign.left,
+                ),
+                IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {
+                    setState(() {
+                      _isEditingRecipeName = !_isEditingRecipeName;
+                    });
+                  },
+                  iconSize: 20,
+                ),
+              ]),
               SizedBox(height: 8.0),
               TextFormField(
                 controller: receipeNameController,
+                enabled: _isEditingRecipeName,
               ),
               Row(
                 children: [
@@ -388,47 +392,24 @@ class _CreateFormulationViewState extends ConsumerState<ReviseFormulationView> {
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.only(bottom: 10),
-        decoration: const BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              color: Pallete.greyColor,
-              width: 0.3,
-            ),
+      bottomNavigationBar: CupertinoTabBar(
+        currentIndex: _page,
+        onTap: onPageChange,
+        backgroundColor: Pallete.backgroundColor,
+        items: [
+          BottomNavigationBarItem(
+            icon: SvgPicture.asset(AssetsConstants.bread2,
+                width: 30.0, height: 30.0),
           ),
-        ),
-        child: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0).copyWith(left: 15, right: 15),
-              child: GestureDetector(
-                onTap: onPickImages,
-                child: SvgPicture.asset(
-                  AssetsConstants.bread,
-                  width: 24,
-                  height: 24,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0).copyWith(left: 15, right: 15),
-              child: SvgPicture.asset(
-                AssetsConstants.bread2,
-                width: 24,
-                height: 24,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0).copyWith(left: 15, right: 15),
-              child: SvgPicture.asset(
-                AssetsConstants.bread,
-                width: 24,
-                height: 24,
-              ),
-            ),
-          ],
-        ),
+          BottomNavigationBarItem(
+            icon: SvgPicture.asset(AssetsConstants.bread3,
+                width: 30.0, height: 30.0),
+          ),
+          BottomNavigationBarItem(
+            icon: SvgPicture.asset(AssetsConstants.croissant,
+                width: 30.0, height: 30.0),
+          ),
+        ],
       ),
     );
   }

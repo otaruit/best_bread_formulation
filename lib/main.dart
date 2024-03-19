@@ -1,3 +1,4 @@
+import 'package:best_bread_formulation/common/error_page.dart';
 import 'package:best_bread_formulation/common/loading_page.dart';
 import 'package:best_bread_formulation/features/auth/controller/auth_controller.dart';
 import 'package:best_bread_formulation/features/auth/view/signup_view.dart';
@@ -26,7 +27,9 @@ class MyApp extends ConsumerWidget {
               }
               return const SignUpView();
             },
-            error: (e, st) => const LoadingPage(),
-            loading: () => const LoadingPage()));
+            error: (e, st) => ErrorPage(
+                  error: e.toString(),
+                ),
+            loading: () => const HomeView()));
   }
 }

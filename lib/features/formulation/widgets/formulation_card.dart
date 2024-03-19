@@ -68,8 +68,7 @@ class FormulationCard extends ConsumerWidget {
                       fit: BoxFit.cover,
                     )
                   : SvgPicture.asset(
-                      AssetsConstants.bread3,
-                      width: 30.0, height: 30.0
+                      AssetsConstants.bread2,
                     ),
             ),
             SizedBox(
@@ -80,6 +79,7 @@ class FormulationCard extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildItem(label: 'レシピ名', value: formulation.recipeName),
+                  _buildItem(label: 'ドキュメントID', value: formulation.id),
                   _buildItem(
                       label: '強力粉',
                       value: '${formulation.strongFlour.toString()}g'),
