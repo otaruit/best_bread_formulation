@@ -2,39 +2,62 @@ import 'dart:io';
 
 import 'package:best_bread_formulation/apis/formulation_api.dart';
 import 'package:best_bread_formulation/apis/storage_api.dart';
+import 'package:best_bread_formulation/core/utils.dart';
 import 'package:best_bread_formulation/models/formulation_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final formulationControllerProvider =
-    StateNotifierProvider<FormulationController, bool>((ref) {
+final formulationControllerProvider = Provider((ref) {
   return FormulationController(
       ref: ref,
       formulationAPI: ref.watch(formulationAPIProvider),
       storageAPI: ref.watch(storageAPIProvider));
-  // storageAPI: ref.watch(storageAPIProvider));
 });
 
-final getFormulationListProvider = FutureProvider((ref) async {
-  return ref.watch(formulationControllerProvider.notifier).getFormulations();
+final getLatestFormulationProvider = StreamProvider.autoDispose((ref) {
+  final formulationAPI = ref.watch(formulationAPIProvider);
+  return formulationAPI.getLatestFormulation();
+});
+
+final getFormulationListProvider = FutureProvider.autoDispose((ref) async {
+  final controller = ref.read(formulationControllerProvider);
+  return controller.getFormulations();
+});
+
+final getVersionListProvider =
+    FutureProvider.family((ref, Formulation formulation) async {
+  return ref.watch(formulationControllerProvider).getVersionList(formulation);
 });
 
 class FormulationController extends StateNotifier<bool> {
   final FormulationAPI _formulationAPI;
   final StorageAPI _storageAPI;
-  final Ref _ref;
+
   FormulationController({
     required Ref ref,
     required FormulationAPI formulationAPI,
     required StorageAPI storageAPI,
-  })  : _ref = ref,
+  })  : 
         _formulationAPI = formulationAPI,
         _storageAPI = storageAPI,
         super(false);
 
-Future<List<Formulation>> getFormulations() async {
+  void _setRecipeIdIfNeeded(Formulation formulation) {
+    if (formulation.recipeId.isEmpty) {
+      formulation = formulation.copyWith(id: formulation.id);
+    }
+  }
+
+  Future<List<Formulation>> getFormulations() async {
     final formulationList = await _formulationAPI.getFormulations();
+    return formulationList
+        .map((formulation) => Formulation.fromMap(formulation.data))
+        .toList();
+  }
+
+  Future<List<Formulation>> getVersionList(Formulation formulation) async {
+    final formulationList = await _formulationAPI.getVersionList(formulation);
     return formulationList
         .map((formulation) => Formulation.fromMap(formulation.data))
         .toList();
@@ -53,11 +76,24 @@ Future<List<Formulation>> getFormulations() async {
       );
     } else {
       Formulation submitFormulation = formulation.copyWith();
+      _setRecipeIdIfNeeded(submitFormulation);
       final res = await _formulationAPI.submitFormulation(submitFormulation);
       res.fold((l) => print(l.message), (r) {
         return null;
       });
     }
+  }
+
+  Future<void> reviseRecipeName({
+    required Formulation formulation,
+    required BuildContext context,
+  }) async {
+    Formulation submitFormulation = formulation.copyWith();
+    _setRecipeIdIfNeeded(submitFormulation);
+    final res = await _formulationAPI.reviseRecipeName(submitFormulation);
+    res.fold((l) => print(l.message), (r) {
+      showSnackBar(context, "レシピ名を変更しました");
+    });
   }
 
   Future<void> _submitFormulationWithImages({
@@ -67,26 +103,9 @@ Future<List<Formulation>> getFormulations() async {
   }) async {
     state = true;
     final imageLinks = await _storageAPI.uploadImage(images);
-    final submitFormulation = Formulation(
-      recipeName: formulation.recipeName,
-      versions: formulation.versions,
-      revisionDate: formulation.revisionDate,
-      creationDate: formulation.creationDate,
-      strongFlour: formulation.strongFlour,
-      weakFlour: formulation.weakFlour,
-      butter: formulation.butter,
-      sugar: formulation.sugar,
-      salt: formulation.salt,
-      skimMilk: formulation.skimMilk,
-      east: formulation.east,
-      water: formulation.water,
-      uid: '',
-      id: '',
-      likes: List.empty(),
-      commentIds: List.empty(),
-      imageLinks: imageLinks,
-    );
-    final res = await _formulationAPI.submitFormulation(submitFormulation);
+    final updatedFormulation = formulation.copyWith(imageLinks: imageLinks);
+    _setRecipeIdIfNeeded(updatedFormulation);
+    final res = await _formulationAPI.submitFormulation(updatedFormulation);
     res.fold((l) => print(l.message), (r) {
       return null;
     });

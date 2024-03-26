@@ -1,4 +1,7 @@
+import 'package:best_bread_formulation/common/loading_page.dart';
 import 'package:best_bread_formulation/constants/assets_constants.dart';
+import 'package:best_bread_formulation/core/utils.dart';
+import 'package:best_bread_formulation/features/formulation/controller/formulation_controller.dart';
 import 'package:best_bread_formulation/features/formulation/views/revise_formulation_view.dart';
 import 'package:best_bread_formulation/models/formulation_model.dart';
 import 'package:best_bread_formulation/theme/pallete.dart';
@@ -26,11 +29,25 @@ class FormulationDetailsView extends ConsumerStatefulWidget {
 class _FormulationDetailsViewState
     extends ConsumerState<FormulationDetailsView> {
   int _page = 0;
+  String selectedVersion = '';
+  List<String> versionList = [];
 
   void onPageChange(int index) {
     setState(() {
       _page = index;
     });
+  }
+
+  void getVersionList(Formulation formulation) {
+    ref.watch(getVersionListProvider(formulation)).when(
+        data: (formulation) {
+          versionList.add(widget.formulation.versions.toString());
+          print(versionList);
+        },
+        error: (e, st) {
+          showSnackBar(context, e.toString());
+        },
+        loading: () => const LoadingPage());
   }
 
   @override
@@ -46,7 +63,17 @@ class _FormulationDetailsViewState
             size: 30,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {
+              Navigator.push(context,
+                  ReviseFormulationView.route(formulation: widget.formulation));
+            },
+          ),
+        ],
       ),
+
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,15 +96,19 @@ class _FormulationDetailsViewState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(children: [
-                      Text(
-                      '${widget.formulation.recipeName}',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22,
+                    Expanded(
+                      child: Container(
+                        constraints: BoxConstraints(maxWidth: 200),
+                        child: Text(
+                          '${widget.formulation.recipeName}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                 
-                    SizedBox(width: 8),
+                    ),
                     Text(
                       'var ${widget.formulation.versions}',
                       style: TextStyle(
@@ -86,14 +117,28 @@ class _FormulationDetailsViewState
                         textBaseline: TextBaseline.alphabetic, // ベースラインを揃える
                       ),
                     ),
-                    IconButton(
-                      icon: Icon(Icons.edit),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            ReviseFormulationView.route(
-                                formulation: widget.formulation));
+                    DropdownButton<String>(
+                      value:
+                          selectedVersion.isNotEmpty ? selectedVersion : null,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedVersion = newValue!;
+                        });
                       },
+                      items: versionList.map((String version) {
+                        return DropdownMenuItem<String>(
+                          value: version,
+                          child: Text(
+                            'var $version',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              textBaseline:
+                                  TextBaseline.alphabetic, // ベースラインを揃える
+                            ),
+                          ),
+                        );
+                      }).toList(),
                     ),
                   ]),
                   SizedBox(height: 8),
@@ -172,7 +217,6 @@ class _FormulationDetailsViewState
           ),
         ],
       ),
-      
     );
   }
 
@@ -189,9 +233,9 @@ class _FormulationDetailsViewState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-            label,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
+          label,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
         ),

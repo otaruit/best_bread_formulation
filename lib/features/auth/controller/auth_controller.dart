@@ -12,7 +12,7 @@ final authControllerProvider =
       authAPI: ref.watch(authAPIProvider), userAPI: ref.watch(userAPIProvider));
 });
 
-final currentUserAccountProvider = FutureProvider<model.User?>((ref) {
+final currentUserAccountProvider = FutureProvider((ref) {
   final authController = ref.watch(authControllerProvider.notifier);
   return authController.currentUser();
 });

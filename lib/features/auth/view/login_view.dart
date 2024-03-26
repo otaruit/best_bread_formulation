@@ -2,6 +2,8 @@ import 'package:best_bread_formulation/constants/ui_constants.dart';
 import 'package:best_bread_formulation/features/auth/controller/auth_controller.dart';
 import 'package:best_bread_formulation/features/auth/view/signup_view.dart';
 import 'package:best_bread_formulation/features/auth/widgets/auth_field.dart';
+import 'package:best_bread_formulation/features/formulation/widgets/formulation_list.dart';
+import 'package:best_bread_formulation/features/home/view/home_view.dart';
 import 'package:best_bread_formulation/theme/pallete.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +30,6 @@ class _LoginViewState extends ConsumerState<LoginView> {
     emailController.dispose();
     passwordController.dispose();
   }
-
 
   void login() {
     ref.read(authControllerProvider.notifier).login(
@@ -99,6 +100,21 @@ class _LoginViewState extends ConsumerState<LoginView> {
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
                       ref.read(authControllerProvider.notifier).logout(context);
+                    },
+                )),
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: RichText(
+                    text: TextSpan(
+                  text: 'ホーム',
+                  style: TextStyle(
+                    color: Pallete.whiteColor,
+                    fontSize: 17,
+                  ),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      HomeView.route();
                     },
                 )),
               )

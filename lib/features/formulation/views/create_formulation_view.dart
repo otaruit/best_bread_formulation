@@ -76,11 +76,13 @@ class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
       creationDate: DateTime.now(),
       uid: '',
       id: '',
+        recipeId: '',
       likes: List.empty(),
       commentIds: List.empty(),
       imageLinks: List.empty(),
+        bestFormulationVersion: ''
     );
-    ref.read(formulationControllerProvider.notifier).submitFormulation(
+    ref.read(formulationControllerProvider).submitFormulation(
         formulation: submitFormulation, context: context, images: images);
     Navigator.pop(context);
   }
@@ -116,22 +118,6 @@ class _CreateFormulationViewState extends ConsumerState<CreateFormulationView> {
             size: 30,
           ),
         ),
-        actions: [
-          ElevatedButton(
-              onPressed: () {},
-              child: const Text('OK'),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.white,
-                onPrimary: Colors.black,
-                shape: const CircleBorder(
-                  side: BorderSide(
-                    color: Colors.black,
-                    width: 1,
-                    style: BorderStyle.solid,
-                  ),
-                ),
-              ))
-        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(

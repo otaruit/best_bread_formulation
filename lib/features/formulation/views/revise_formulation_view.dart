@@ -32,13 +32,14 @@ class ReviseFormulationView extends ConsumerStatefulWidget {
 
 class _ReviseFormulationViewState extends ConsumerState<ReviseFormulationView> {
   int _page = 0;
+
   void onPageChange(int index) {
     setState(() {
       _page = index;
     });
   }
 
-  String selectedVersion = '';
+  List<String> versionList = [];
   bool _isEditingRecipeName = false;
   List<File> images = [];
   final borderStyle = OutlineInputBorder(
@@ -47,7 +48,7 @@ class _ReviseFormulationViewState extends ConsumerState<ReviseFormulationView> {
       width: 1,
     ),
   );
-  late final TextEditingController receipeNameController;
+  late final TextEditingController recipeNameController;
   late final TextEditingController versionController;
   late final TextEditingController strongFlourController;
   late final TextEditingController weakFlourController;
@@ -60,10 +61,11 @@ class _ReviseFormulationViewState extends ConsumerState<ReviseFormulationView> {
   @override
   void initState() {
     super.initState();
-    receipeNameController =
+    versionList = getNextVersion(widget.formulation.versions.toString());
+    recipeNameController =
         TextEditingController(text: widget.formulation.recipeName);
     versionController =
-        TextEditingController(text: widget.formulation.versions.toString());
+        TextEditingController(text: versionList[0]);
     strongFlourController =
         TextEditingController(text: widget.formulation.strongFlour.toString());
     weakFlourController =
@@ -78,10 +80,11 @@ class _ReviseFormulationViewState extends ConsumerState<ReviseFormulationView> {
         TextEditingController(text: widget.formulation.sugar.toString());
     skimMilkController =
         TextEditingController(text: widget.formulation.skimMilk.toString());
+
   }
 
-  void submitFormulation() {
-    if (receipeNameController.text.isEmpty) {
+  void reviseRecipeName() {
+    if (recipeNameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('レシピ名を入力してください'),
@@ -89,8 +92,14 @@ class _ReviseFormulationViewState extends ConsumerState<ReviseFormulationView> {
       );
       return;
     }
+    final updatedFormulation =
+        widget.formulation.copyWith(recipeName: recipeNameController.text);
+    ref
+        .read(formulationControllerProvider)
+        .reviseRecipeName(formulation: updatedFormulation, context: context);
+  }
 
-    // コントローラーの値が空の場合は'0'に設定
+  void reviseFormulation() {
     final strongFlour =
         strongFlourController.text.isEmpty ? '0' : strongFlourController.text;
     final versions =
@@ -105,7 +114,7 @@ class _ReviseFormulationViewState extends ConsumerState<ReviseFormulationView> {
     final water = waterController.text.isEmpty ? '0' : waterController.text;
 
     final submitFormulation = Formulation(
-      recipeName: receipeNameController.text,
+      recipeName: recipeNameController.text,
       versions: double.parse(versions),
       strongFlour: int.parse(strongFlour),
       weakFlour: int.parse(weakFlour),
@@ -120,11 +129,13 @@ class _ReviseFormulationViewState extends ConsumerState<ReviseFormulationView> {
       creationDate: DateTime.now(),
       uid: '',
       id: ID.unique(),
+      recipeId: widget.formulation.id,
       likes: List.empty(),
       commentIds: List.empty(),
       imageLinks: List.empty(),
+      bestFormulationVersion: '',
     );
-    ref.read(formulationControllerProvider.notifier).submitFormulation(
+    ref.read(formulationControllerProvider).submitFormulation(
         formulation: submitFormulation, context: context, images: images);
     Navigator.pop(context);
   }
@@ -137,25 +148,35 @@ class _ReviseFormulationViewState extends ConsumerState<ReviseFormulationView> {
   void onVersionChanged(String? value) {
     if (value != null) {
       setState(() {
-        selectedVersion = value;
+        versionController.text = value;
       });
     }
   }
 
-  static List<String> getNextVersion(String currentVersion) {
-    List<String> versionList = [];
+  List<String> getNextVersion(String currentVersion) {
     final List<String> versionParts = currentVersion.split('.');
     final int major = int.parse(versionParts[0]);
-    final int minor = int.parse(versionParts[1]);
+    int minor = 0;
 
-    versionList.add('$major.${minor + 1}');
-    versionList.add('${major + 1}.0');
+    if (versionParts.length > 1) {
+      minor = int.parse(versionParts[1]);
+    }
+
+    List<String> nextVersions = [];
+    nextVersions.add('$major.${minor + 1}');
+    nextVersions.add('${major + 1}.0');
+
+    // Remove duplicates
+    versionList = nextVersions.toSet().toList();
+    print(versionList);
     return versionList;
   }
 
+
   @override
   void dispose() {
-    receipeNameController.dispose();
+    recipeNameController.dispose();
+    versionController.dispose();
     strongFlourController.dispose();
     weakFlourController.dispose();
     waterController.dispose();
@@ -193,20 +214,48 @@ class _ReviseFormulationViewState extends ConsumerState<ReviseFormulationView> {
                   textAlign: TextAlign.left,
                 ),
                 IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () {
-                    setState(() {
-                      _isEditingRecipeName = !_isEditingRecipeName;
-                    });
-                  },
+                  icon: _isEditingRecipeName
+                      ? const Icon(
+                          Icons.edit,
+                          color: Pallete.blueColor,
+                        )
+                      : const Icon(
+                          Icons.edit,
+                          color: Pallete.whiteColor,
+                        ),
+                  onPressed: _isEditingRecipeName
+                      ? () {
+                          setState(() {
+                            _isEditingRecipeName = false;
+                          });
+                        }
+                      : () {
+                          setState(() {
+                            _isEditingRecipeName = true;
+                          });
+                        },
                   iconSize: 20,
                 ),
               ]),
               SizedBox(height: 8.0),
-              TextFormField(
-                controller: receipeNameController,
-                enabled: _isEditingRecipeName,
-              ),
+              Row(children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: recipeNameController,
+                    enabled: _isEditingRecipeName,
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.refresh),
+                  onPressed: () {
+                    setState(() {
+                      _isEditingRecipeName = false;
+                    });
+                    reviseRecipeName();
+                  },
+                  iconSize: 20,
+                ),
+              ]),
               Row(
                 children: [
                   Expanded(
@@ -217,18 +266,16 @@ class _ReviseFormulationViewState extends ConsumerState<ReviseFormulationView> {
                   ),
                   Expanded(
                     child: DropdownButton<String>(
-                        value: getNextVersion(
-                            versionController.text.toString())[0],
+                      value: versionController.text,
                       onChanged: onVersionChanged,
-                        items: getNextVersion(versionController.text.toString())
-                            .map((String value) {
-                          return DropdownMenuItem<String>(
+                      items: versionList.map((String value) {
+                        return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
-                          );
-                        }).toList()
+                        );
+                      }).toList(),
                     ),
-                  ),
+                  )
                 ],
               ),
               const SizedBox(height: 16.0),
@@ -385,7 +432,7 @@ class _ReviseFormulationViewState extends ConsumerState<ReviseFormulationView> {
                 child: Text('画像を選択'),
               ),
               ElevatedButton(
-                onPressed: submitFormulation,
+                onPressed: () => reviseFormulation(),
                 child: Text('改訂版を投稿'),
               ),
             ],
