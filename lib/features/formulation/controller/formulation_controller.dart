@@ -20,7 +20,7 @@ final getLatestFormulationProvider = StreamProvider.autoDispose((ref) {
   return formulationAPI.getLatestFormulation();
 });
 
-final getFormulationListProvider = FutureProvider.autoDispose((ref) async {
+final getFormulationListProvider = FutureProvider((ref) async {
   final controller = ref.read(formulationControllerProvider);
   return controller.getFormulations();
 });

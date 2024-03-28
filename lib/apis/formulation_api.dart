@@ -39,6 +39,7 @@ class FormulationAPI implements IFormulationAPI {
       databaseId: AppwriteConstants.databaseId,
       collectionId: AppwriteConstants.formulationCollectionId,
       queries: [
+        Query.notEqual('recipeId', ''),
         Query.orderDesc('creationDate'),
       ],
     );
