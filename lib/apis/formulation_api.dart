@@ -4,6 +4,7 @@ import 'package:best_bread_formulation/core/failure.dart';
 import 'package:best_bread_formulation/core/providers.dart';
 import 'package:best_bread_formulation/core/type_defs.dart';
 import 'package:best_bread_formulation/models/formulation_model.dart';
+import 'package:best_bread_formulation/models/recipe_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 
@@ -18,8 +19,9 @@ final formulationAPIProvider = Provider((ref) {
 
 abstract class IFormulationAPI {
   Future<List<Document>> getFormulations();
-  FutureEither<Document> submitFormulation(Formulation formulation);
-  FutureEither<Document> reviseRecipeName(Formulation formulation);
+  FutureEither<Document> submitFormulation(
+      Formulation formulation, Recipe recipe);
+  FutureEither<Document> reviseRecipeName(Recipe recipe);
   Future<List<Document>> getVersionList(Formulation formulation);
   Stream<RealtimeMessage> getLatestFormulation();
 }
@@ -38,10 +40,6 @@ class FormulationAPI implements IFormulationAPI {
     final documents = await _db.listDocuments(
       databaseId: AppwriteConstants.databaseId,
       collectionId: AppwriteConstants.formulationCollectionId,
-      queries: [
-        Query.notEqual('recipeId', ''),
-        Query.orderDesc('creationDate'),
-      ],
     );
     return documents.documents;
   }
@@ -63,16 +61,16 @@ class FormulationAPI implements IFormulationAPI {
   }
 
   @override
-  FutureEither<Document> reviseRecipeName(Formulation formulation) async {
+  FutureEither<Document> reviseRecipeName(Recipe recipe) async {
     try {
       final Map<String, dynamic> updateData = {
-        'recipeName': formulation.recipeName,
+        'recipeName': recipe.recipeName,
       };
 
       final document = await _db.updateDocument(
           databaseId: AppwriteConstants.databaseId,
-          collectionId: AppwriteConstants.formulationCollectionId,
-          documentId: formulation.recipeId,
+          collectionId: AppwriteConstants.recipeCollectionId,
+          documentId: recipe.recipeId,
           data: updateData);
 
       return right(document);
@@ -83,18 +81,18 @@ class FormulationAPI implements IFormulationAPI {
     }
   }
 
-  @override
-  Future<List<Document>> getVersionList(Formulation formulation) async {
-    final document = await _db.listDocuments(
-      databaseId: AppwriteConstants.databaseId,
-      collectionId: AppwriteConstants.formulationCollectionId,
-      queries: [
-        Query.equal('recipeId', formulation.recipeId),
-        Query.orderDesc('creationDate'),
-      ],
-    );
-    return document.documents;
-  }
+  // @override
+  // Future<List<Document>> getVersionList(Formulation formulation) async {
+  //   final document = await _db.listDocuments(
+  //     databaseId: AppwriteConstants.databaseId,
+  //     collectionId: AppwriteConstants.formulationCollectionId,
+  //     queries: [
+  //       Query.equal('recipeId', formulation.recipeId),
+  //       Query.orderDesc('creationDate'),
+  //     ],
+  //   );
+  //   return document.documents;
+  // }
 
   @override
   Stream<RealtimeMessage> getLatestFormulation() {

@@ -3,6 +3,7 @@ class AppwriteConstants {
   static const String projectId = '65dea751a2e6be0327f8';
   static const String userCollectionId = '65dea77e07c4ff2eb00a';
   static const String formulationCollectionId = '65deea12e89b8b7a1d05';
+  static const String recipeCollectionId = '660521724b6f2bae4511';
   static const String bucketId = '65e689a1799d4f3a630f';
 
   static const String endPoint = 'http://localhost/v1';

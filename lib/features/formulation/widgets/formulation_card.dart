@@ -1,6 +1,6 @@
 import 'package:best_bread_formulation/constants/assets_constants.dart';
 import 'package:best_bread_formulation/features/formulation/views/formulation_details_view.dart';
-import 'package:best_bread_formulation/models/formulation_model.dart';
+import 'package:best_bread_formulation/models/data_set.dart';
 import 'package:best_bread_formulation/theme/pallete.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 
 class FormulationCard extends ConsumerWidget {
-  final Formulation formulation;
-  const FormulationCard({required this.formulation, Key? key})
+  final DataSet dataSet;
+
+  const FormulationCard({required this.dataSet, Key? key})
       : super(key: key);
 
   String _formDate(DateTime? date) {
@@ -48,7 +49,8 @@ class FormulationCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, FormulationDetailsView.route(formulation));
+        Navigator.push(
+            context, FormulationDetailsView.route(dataSet.formulation));
       },
       child: Container(
         decoration: BoxDecoration(
@@ -62,9 +64,9 @@ class FormulationCard extends ConsumerWidget {
             Container(
               width: 150, // 画像の幅を設定
               height: 150,
-              child: formulation.imageLinks.isNotEmpty
+              child: dataSet.recipe.imageLinks.isNotEmpty
                   ? Image.network(
-                      formulation.imageLinks.first,
+                      dataSet.recipe.imageLinks.first,
                       fit: BoxFit.cover,
                     )
                   : SvgPicture.asset(
@@ -78,37 +80,38 @@ class FormulationCard extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildItem(label: 'レシピ名', value: formulation.recipeName),
-                  _buildItem(label: 'ドキュメントID', value: formulation.id),
+                  _buildItem(label: 'レシピ名', value: dataSet.recipe.recipeName),
+                  _buildItem(label: 'ドキュメントID', value: dataSet.formulation.id),
                   _buildItem(
                       label: '強力粉',
-                      value: '${formulation.strongFlour.toString()}g'),
+                      value: '${dataSet.formulation.strongFlour.toString()}g'),
                   _buildItem(
                       label: '薄力粉',
-                      value: '${formulation.weakFlour.toString()}g'),
+                      value: '${dataSet.formulation.weakFlour.toString()}g'),
                   _buildItem(
-                      label: 'バター', value: '${formulation.butter.toString()}g'),
+                      label: 'バター',
+                      value: '${dataSet.formulation.butter.toString()}g'),
                   _buildItem(
-                      label: '砂糖', value: '${formulation.sugar.toString()}g'),
+                      label: '砂糖',
+                      value: '${dataSet.formulation.sugar.toString()}g'),
                   _buildItem(
-                      label: '塩', value: '${formulation.salt.toString()}g'),
+                      label: '塩',
+                      value: '${dataSet.formulation.salt.toString()}g'),
                   _buildItem(
                       label: 'スキムミルク',
-                      value: '${formulation.skimMilk.toString()}g'),
+                      value: '${dataSet.formulation.skimMilk.toString()}g'),
                   _buildItem(
-                      label: '水', value: '${formulation.water.toString()}g'),
+                      label: '水',
+                      value: '${dataSet.formulation.water.toString()}g'),
                   _buildItem(
-                      label: 'イースト', value: '${formulation.east.toString()}g'),
+                      label: 'イースト',
+                      value: '${dataSet.formulation.east.toString()}g'),
                   SizedBox(height: 8), // ラベルの間に隙間を入れる
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '${_formDate(formulation.revisionDate)}更新',
-                        textAlign: TextAlign.right,
-                      ),
-                      Text(
-                        '${_formDate(formulation.creationDate)}投稿',
+                        '${_formDate(dataSet.formulation.creationDate)}投稿',
                         textAlign: TextAlign.right,
                       ),
                     ],
